@@ -1,0 +1,41 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+  
+  
+  <!-- The definition of the Root Spring Container shared by all Servlets and Filters 
+  first web.xml deployment descripter will be loaded then root-context.xml followed by spring-context.xml
+  
+  root-context.xml   ====> non web beans spring configuration file
+  spring-context.xml ====> web bean spring configuration file
+  -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/Spring/root-context.xml</param-value>
+	</context-param>	
+	
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<!--  now define servlet while processess application request -->
+	<servlet>
+	   <servlet-name>SpringWeb</servlet-name>
+	   <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>	
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/Spring/SpringWeb/spring-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>SpringWeb</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+</web-app>
+  

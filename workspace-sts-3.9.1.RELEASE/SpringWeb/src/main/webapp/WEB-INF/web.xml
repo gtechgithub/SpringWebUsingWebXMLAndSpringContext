@@ -1,0 +1,46 @@
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+  <display-name>Archetype Created Web Application</display-name>
+  
+  
+  <!-- The definition of the Root Spring Container shared by all Servlets and Filters 
+  first web.xml deployment descripter will be loaded then root-context.xml followed by spring-context.xml
+  
+  root-context.xml   ====> non web beans spring configuration file
+  spring-context.xml ====> web bean spring configuration file
+  -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/Spring/root-context.xml</param-value>
+	</context-param>	
+	
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<!--  now define servlet while processess application request -->
+	<servlet>
+	   <servlet-name>SpringWeb</servlet-name>
+	   <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>	
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/Spring/SpringWeb/spring-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>SpringWeb</servlet-name>
+		<url-pattern>/Spring/*</url-pattern>
+	</servlet-mapping>
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/errorpage404.jsp</location>
+  </error-page>
+  
+</web-app>
+  

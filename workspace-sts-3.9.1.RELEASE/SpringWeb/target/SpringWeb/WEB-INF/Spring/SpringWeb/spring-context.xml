@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+
+xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+ http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ http://www.springframework.org/schema/context 
+ http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+ 
+ 
+ 	<!--  DispatcherServlet context: defines the servlet request mapping architecture -->
+ 
+	<!-- enables the MVC spring @controller @RequestMapping @Required etc -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	
+	
+	<!--  resources mapping once can get the static resources in then ${webapproot}/resources directory -->
+ 	<!--  <mvc:resources mapping="/resources/**" location="/resources/"></mvc:resources>
+ 	 -->
+ 	<!-- resolves views which is used by the controller to display the page -->
+ 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+ 		<property name="prefix" value="/WEB-INF/views/"></property>
+ 		<property name="suffix" value=".jsp"></property>
+ 	</bean>
+ 	
+ 	<context:component-scan base-package="com.javapoint"></context:component-scan>
+ 	
+ </beans>
+ 
