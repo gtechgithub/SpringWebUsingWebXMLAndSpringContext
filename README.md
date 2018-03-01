@@ -1,78 +1,182 @@
 # SpringWebUsingWebXMLAndSpringContext
 SpringWebUsingWebXMLAndSpringContext
+How to create Web application 
+-------------------------------
 
+Please note this is used earlier, now it has become very simple using STS, hence below instructions are application
+if we are manually setting up deployment descriptor and Spring config file.
 
-Spring IoC Container
-====================
-Spring Ioc is the mechanism to achieve loose coupling between object dependencies.
+1) create a maven project with Web artifact.
+2. Ensure below directory is created in the project explorer, if not manually create it
 
-Spring container is the program which injects dependencies to an object and make ready for use.
+    SpringWeb   pom.xml
+				
+				>src
+				   
+					   > Java
+							 > com
+								  >javapoint
+											Employee.java
+											HomeController.java
+					   > Resources
+					   > webapp
+							   > WEB-INF
+									   > Spring
+											   >SpringWeb
+														 spring-context.xml
+										 root-context.xml	   
+									   
+									   > views
+											  home.jsp
+									   
+									   web.xml
+						 index.jsp
+							 
+			 
+3.	In the pom.xml we need following dependencies for web, servlet, jsp to work.
 
-Spring container class are part of org.springframework.beans and org.springframework.context packages
-Spring IoC container provides us different ways to decouple the object dependencies.
+		 
+	    <dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-core</artifactId>
+		<version>${spring.version}</version>
+    </dependency>
 
-i) BeanFactory
-ii) Application context
-
-BeanFactory is root interface of the IoC container and ApplicationContext is the child interface of BeanFactory interface.
-
-differences between bean factory and applicationContext
----------------------------------------------------------
-1.BeanFactory does Lazy initialization, which means it creates beans only when it is requested, whereas applicationcontext
-creates all beans during initialization
-
-2. applicationContext supports L10n and internalization, whereas beanfactory does not.
-
-3.Annotation based dependency injection is supported by application context whereas beanfactory does not.
-
-
-Some of the useful implementation of applicationContext
-------------------------------------------------------
-a) ClassPathXmlApplicationContext: if we spring bean configuration file in an application, 
-then we use ClassPathXmlApplicationContext class to load the file and get container object.
-
-b) FileSystemXmlApplicationContext: it is similar to the ClassPathXmlApplicationContext, however
-the file can be loaded anywhere in the filesystem.
-
-c) AnnotationConfigApplicationContext: if we are using standalone java application and using annotation for configuration,
-then we can use AnnotationConfigApplicationContext to initialize the container objects and get the bean objects.
-
-Spring Bean
------------
-any object that we initialize through spring container is called Spring bean.
-Any POJO can be a Bean.
-
-Spring bean scopes
---------------------
-There are five scopes defined for Spring Beans.
-
-
-1.singleton:
-	only once instance is created for each container.
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context</artifactId>	
+		<version>${spring.version}</version>
+	</dependency>
 	
-2. prototype:
-	a new instance is created every time bean is requested.
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+    
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+     </dependency>
 
-3. request:
-	it is similar to prototype scope bean  but it is used for web application, a new instance of the bean is created
-	for each http request.
 
-4. session: 
-	a new bean is created for each http session by the container
+	<!--  needed for JSP rendering html tags -->
+    <dependency>
+	  <groupId>javax.servlet</groupId>
+	  <artifactId>javax.servlet-api</artifactId>
+	  <version>3.1.0</version>
+	  <scope>provided</scope>
+	</dependency>
+	
+	<!--  needed for JSP JSTL rendering -->
+	<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>jstl</artifactId>
+	    <version>1.2</version>
+	</dependency>
+	
 
-5. global-session – This is used to create global session beans for Portlet application	
-
-
-<TODO>
-example of request bean and session bean
-
-Spring bean configuration
---------------------------
-1. Annotation Based Configuration – By using @Service or @Component annotations. 
-   Scope details can be provided with @Scope annotation.
+4. Next we need to define Deployment descriptor which is the Web.xml
    
-2. XML based configuration - by using simple spring configuration xml file to configure the beans
-   if you are using spring MVC  then use can use web.xml to mention the spring configuration file
+   a) primarily context param is essential, hence define it.
 
-   
+		  <!-- The definition of the Root Spring Container shared by all Servlets and Filters 
+		  first web.xml deployment descripter will be loaded then root-context.xml followed by spring-context.xml
+		  
+		  root-context.xml   ====> non web beans spring configuration file
+		  spring-context.xml ====> web bean spring configuration file
+		  -->
+			<context-param>
+				<param-name>contextConfigLocation</param-name>
+				<param-value>/WEB-INF/Spring/root-context.xml</param-value>
+			</context-param>	   
+			
+	b) create a listener which will create container class and listen to all servlet request
+
+				<!-- Creates the Spring Container shared by all Servlets and Filters -->
+				<listener>
+					<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+				</listener>
+				
+	c) now we need to define the servlet and dispatcher servlet which processess the application request
+	   and for the dispatcher servlet we need to mention the config location which is the servlet-config.xml
+
+		The <load-on-startup> is a tag element which appear inside <servlet> tag in a web.xml. This tag specifies that the servlet should be loaded automatically on the startup of the web application.	   
+
+		the <load-on-startup> value is a positive integer or 0 which specifies the servelts loaded order as per your business logic or what suites your application.
+
+		
+	   	<!--  now define servlet while processess application request -->
+		<servlet>
+		   <servlet-name>SpringWeb</servlet-name>
+		   <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+			<init-param>	
+				<param-name>contextConfigLocation</param-name>
+				<param-value>/WEB-INF/Spring/SpringWeb/spring-context.xml</param-value>
+			</init-param>
+			<load-on-startup>1</load-on-startup>
+		</servlet>
+
+	d) finally we need to do the servlet mapping, let say we have two servlet tags servlet mapping is essential to resolve it.
+
+
+	url to hit: 
+	http://localhost:8080/SpringWeb/Spring/Home
+	
+			<servlet-mapping>
+				<servlet-name>SpringWeb</servlet-name>
+				<url-pattern>/Spring/*</url-pattern>
+			</servlet-mapping>
+			
+	e) finally configure error page for 404 page not found 
+
+		url to hit: 
+	http://localhost:8080/SpringWeb/S
+	or 
+	http://localhost:8080/SpringWeb/Spring/web
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/errorpage404.jsp</location>
+	</error-page>
+	
+5) now we need to define spring context as mentioned in the contextConfigLocation
+
+	a) defines servlet request mapping
+	
+	 	<!--  DispatcherServlet context: defines the servlet request mapping architecture -->
+ 
+		<!-- enables the MVC spring @controller @RequestMapping @Required etc -->
+		<mvc:annotation-driven></mvc:annotation-driven>
+
+	b) mentioned resources path
+	<!--  resources mapping once can get the static resources in then ${webapproot}/resources directory -->
+ 	<!--  <mvc:resources mapping="/resources/**" location="/resources/"></mvc:resources>
+ 	 -->
+ 	
+	c) define view resolver
+	
+	<!-- resolves views which is used by the controller to display the page -->
+ 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+ 		<property name="prefix" value="/WEB-INF/views/"></property>
+ 		<property name="suffix" value=".jsp"></property>
+ 	</bean>
+ 	
+	d) finally component scan to locate the packages to identify Component, Controller etc.
+	
+
+6) now we need to create controller to handle request and JSP
+
+7) at last create a dummmy root-context file in the location mentioned in deployment  descriptor
+
+
+		<?xml version="1.0" encoding="UTF-8"?>
+		<beans xmlns="http://www.springframework.org/schema/beans"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+			  <!-- Root Context: defines shared resources visible to all other web components -->
+
+		</beans>
 	
