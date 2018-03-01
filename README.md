@@ -16,21 +16,21 @@ if we are manually setting up deployment descriptor and Spring config file.
 					   > Java
 							 > com
 								  >javapoint
-											Employee.java
-											HomeController.java
+									    |----->Employee.java
+									    |----->HomeController.java
 					   > Resources
 					   > webapp
-							   > WEB-INF
-									   > Spring
-											   >SpringWeb
-														 spring-context.xml
-										 root-context.xml	   
-									   
-									   > views
-											  home.jsp
-									   
-									   web.xml
-						 index.jsp
+					  |		   > WEB-INF
+					  |		   |		   > Spring
+					  |		   |		    |		   >SpringWeb
+					  |		   |	            |	                    |----->spring-context.xml
+					  |		   |		    |----->root-context.xml	   
+					  |		   |		   
+					  |		   |		   > views
+					  |		   |		          |----->home.jsp
+					  |		   |		   
+					  |		   |----->web.xml
+					  |----->index.jsp
 							 
 			 
 3.	In the pom.xml we need following dependencies for web, servlet, jsp to work.
